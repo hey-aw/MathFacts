@@ -59,7 +59,8 @@ var questionLimit = 5;
     if (questionsAttempted < questionLimit) {
       var newQuestion = askNewQuestion(type);
       response.session('question', newQuestion);
-      response.say(newQuestion.promptText).reprompt(newQuestion.promptText).shouldEndSession(false);
+      var reprompt = ("Let me give you a chance to think. <break time='5s'/> " + newQuestion.promptText);
+      response.say(newQuestion.promptText).reprompt(reprompt).shouldEndSession(false);
     } else {
       summarizeSession(request, response);
       }
@@ -80,7 +81,8 @@ var questionLimit = 5;
         if (questionsAttempted < questionLimit) {
           var newQuestion = askNewQuestion(type);
           response.session('question', newQuestion);
-          response.say(newQuestion.promptText).reprompt(newQuestion.promptText).shouldEndSession(false);
+          var reprompt = ("Let me give you a chance to think. <break time='5s'/> " + newQuestion.promptText);
+          response.say(newQuestion.promptText).reprompt(reprompt).shouldEndSession(false);
         } else {
           summarizeSession(request, response);
           }          
