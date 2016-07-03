@@ -90,33 +90,8 @@ app.intent('answer', {
 	});
 
 function exitFunction(request, response) {
-	var questionsAttempted = parseInt(request.session('questionsAttempted')) || 0;
-  var questionsCorrect = parseInt(request.session('questionsCorrect')) || 0;
-  if (questionsAttempted > 0) {
-  	summarizeSession(request, response);
-  }
   response.clearSession();
 };
-
- function summarizeSession (request, response) {
-  var summaryText = ("You got " + questionsCorrect + " correct out of " + questionsAttempted + ".");
-  var congrats = "";
-  var ratio = questionsCorrect / questionsAttempted;
-  if (ratio < (0.8)) {
-    congrats = "Nice work! Keep practicing!";
-  } 
-  if (ratio >= (0.8)) {
-
-    var congratulations = ["Jolly good time!", "Chick-chicka Boom Boom la la!", "You might have a career in this!", "You're a superstar!", "You are top banana!", "Cowabunga!", "You're the bee's knees!", "You're the cat's pajamas!"]
-    var index = Math.floor(Math.random() * (congratulations.length));
-    congrats = congratulations[index];
-  }
-  var speechText = (summaryText + " " + congrats)
-  response.say(speechText).card(type, speechText);
-  response.clearSession();
-
-  }
-
 
 app.sessionEnded(function(request, response) {
   exitFunction(request, response);
