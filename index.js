@@ -129,6 +129,7 @@ app.intent('AMAZON.StopIntent', function(request, response) {
 
 app.intent('AMAZON.CancelIntent', function(request, response) {
   response.say("Okay, canceling.")
+  exitFunction(request, response);
 });
 
 app.intent('AMAZON.HelpIntent', function(request, response) {
