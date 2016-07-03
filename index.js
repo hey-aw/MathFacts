@@ -31,9 +31,9 @@ app.intent('requestPractice', {
 
    	 	if (question) {
    	 		if (question.promptText) { // There is already a question being asked
-			 		response.say("I'm sorry, I didn't hear a number.");	
+			 		var prompt = ("I'm sorry, I didn't hear a number. Try repeating the whole fact.") + question.promptText;	
 			 		var reprompt = ("If you want to stop, just say, 'stop.' " + question.promptText);
-	  	 		response.say(question.promptText).reprompt(reprompt).shouldEndSession(false);
+	  	 		response.say(prompt).reprompt(reprompt).shouldEndSession(false);
 	  	 		return true;
   	 		}
   	 	} 
@@ -49,7 +49,8 @@ app.intent('requestPractice', {
  		    // Save the question
 		response.session("question", question);
 		response.say("Okay, " + operation + ", let's get started.");
-		response.say(question.promptText).reprompt(question.promptText).shouldEndSession(false);	 			
+		var reprompt = ("Let me give you a chance to think. <break time='5s'/>" + question.promptText);
+		response.say(question.promptText).reprompt(reprompt).shouldEndSession(false);	 			
   });
 
 
@@ -64,9 +65,9 @@ app.intent('answer', {
 	var question = response.session("question");
 	var isAValidNumber = (attempt >= 0)
 	if (!isAValidNumber) { // It's not a valid number
-		console.log("Sorry, I didn't hear a number. Can you repeat that?")
-		response.say("Sorry, I didn't hear a number. Can you repeat that?");
-		response.say(question.promptText).reprompt("If you're all done, you can say stop. " + question.promptText).shouldEndSession(false);
+		var prompt = ("Sorry, I didn't hear a number. Try repeating the whole fact." + question.promptText);
+		var reprompt = ("If you're all done, you can say stop. " + question.promptText);
+		response.say(prompt).reprompt(reprompt).shouldEndSession(false);
 		return true;
 	}
 
