@@ -38,13 +38,8 @@ var questionLimit = 5;
 
   }
 
-  // Set up the solution based on type
-  // If type doesnt' match, don't execute the attempt
   var attempt = request.slot('Attempt')
   console.log("Attempt: " + attempt);
-
-  
-
 
   if (attempt == question.solution) { // Correct
     console.log("That's right");
