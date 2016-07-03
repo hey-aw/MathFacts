@@ -11,15 +11,6 @@ var app = new alexa.app('mathfacts');
 var askNewQuestion = require("./Question");
 var answer = require("./Answer");
 
-// Extend say function
-// app.response.prototype.say = (function(request, response) {
-// 	return function(request, response) {
-// 		console.log(response)
-// 		return super.apply(this)
-// 	}
-// })
-
-
 app.launch(function(request, response) {
   response.clearSession();
   var reprompt = ("You can ask for addition, subtraction, multiplication, or division. Which operation would you like to practice?")
@@ -97,57 +88,34 @@ app.intent('answer', {
 		}
 	});
 
-//Atempt to make intent handler testable 
-/*
-var answerIntentHandler = function (request, response) {
-	var slot = function() {
-		return request.slot;
-	}
-	var session = function() {
-		return response.session;
-	}
-	var say = function () {
-		return response.say;
-	}
-	var attempt = Number(slot("Attempt"));
-	var question = session("question");
-	var promptText = function() {
-		return question.promptText;
-	}
-	var shouldEndSession = function() {
-		return response.shouldEndSession;
-	}
-	var isAValidNumber = (attempt >= 0)
-	if (!isAValidNumber) { // It's not a valid number
-		console.log("Sorry, I didn't hear a number. Can you repeat that?")
-		say("Sorry, I didn't hear a number. Can you repeat that?")
-		say(promptText);
-		shouldEndSession(false);
-		return true;
-	}
-
-	if (question) {
-		if (question.promptText) {
-				answer(request, response);
-		}
-	} else if (request.session('type')) {
-		console.log("No question, but has a type.")
-		say("Oops, you said a number, but I don't remember the question. Silly me! Let's try again.");
-		var question = askNewQuestion(type);
-		// ask the new question 
-		say(question.promptText).reprompt(question.promptText).shouldEndSession(false);
-		// save the new question
-	  session("question", question);
-		} else {
-			say("What kind of problem would you like to practice?").shouldEndSession(false);
-		}
-	}
-	*/
-
 function exitFunction(request, response) {
-  console.log("let's exit");
+	var questionsAttempted = parseInt(request.session('questionsAttempted')) || 0;
+  var questionsCorrect = parseInt(request.session('questionsCorrect')) || 0;
+  if (questionsAttempted > 0) {
+  	summarizeSession(request, response);
+  }
   response.clearSession();
 };
+
+ function summarizeSession (request, response) {
+  var summaryText = ("You got " + questionsCorrect + " correct out of " + questionsAttempted + ".");
+  var congrats = "";
+  var ratio = questionsCorrect / questionsAttempted;
+  if (ratio < (0.8)) {
+    congrats = "Nice work! Keep practicing!";
+  } 
+  if (ratio >= (0.8)) {
+
+    var congratulations = ["Jolly good time!", "Chick-chicka Boom Boom la la!", "You might have a career in this!", "You're a superstar!", "You are top banana!", "Cowabunga!", "You're the bee's knees!", "You're the cat's pajamas!"]
+    var index = Math.floor(Math.random() * (congratulations.length));
+    congrats = congratulations[index];
+  }
+  var speechText = (summaryText + " " + congrats)
+  response.say(speechText).card(type, speechText);
+  response.clearSession();
+
+  }
+
 
 app.sessionEnded(function(request, response) {
   exitFunction(request, response);
