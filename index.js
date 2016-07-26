@@ -58,7 +58,7 @@ app.intent('answer', {
   "slots": {
     "Attempt": "AMAZON.NUMBER"
   },
-  "utterances": ["{it's|is|that's|the answer is|the sum is|the product is|the result is} {-|Attempt}", "{1-19|20-144 by 12} {plus|take away|minus|times|multiplied by|divided by} {1-12} {is|equals|makes} {-|Attempt}"]
+  "utterances": ["{-|Attempt}", "{it's|is|that's|the answer is|the sum is|the product is|the result is} {-|Attempt}", "{1-19|20-144 by 12} {plus|take away|minus|times|multiplied by|divided by} {1-12} {is|equals|makes} {-|Attempt}"]
 }, function(request, response) {
 	var attempt = Number(request.slot("Attempt"));
 	// console.log("Attempt: " + attempt);
