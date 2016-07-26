@@ -33,7 +33,32 @@ var questionLimit = 5;
             congrats = congratulations[index];
           }
           var speechText = (summaryText + " " + congrats)
-          response.say(speechText).card(type, speechText);
+          var cardTitle = "";
+          switch (type) {
+            case "addition":
+              cardTitle = "Addition Practice";
+              break;
+            case "subtraction":
+              cardTitle = "Subtraction Practice";
+              break;
+            case "multiplication":
+              cardTitle = "Multiplication Practice";
+              break;
+            case "division":
+              cardTitle = "Division Practice";
+              break;
+            default:
+              break;
+          }
+          response.say(speechText).card({
+            type: "Standard",
+            title: cardTitle,  //this is not required for type Simple OR Standard
+            text:  speechText,
+            image: {                //image is optional
+              smallImageUrl: "https://s3.amazonaws.com/awzone/Math-Facts-Icons/Math+Facts+Icon_480.png",  //One must be specified
+              largeImageUrl: "https://s3.amazonaws.com/awzone/Math-Facts-Icons/Math+Facts+Icon_800.png"
+            }
+          });
           response.clearSession();
 
   }
