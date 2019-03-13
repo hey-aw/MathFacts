@@ -1,119 +1,87 @@
 // Math Facts, a math practice skill for Amazon Alexa
 // Matt Anthes-Washburn
+// Awesomely Done, LLC
 
-var alexa = require('alexa-app');
+const Alexa = require("ask-sdk")
+const i18next = require("i18next")
+const translations = require("./config/translations")
 
-// Allow this module to be reloaded by hotswap when changed
-module.change_code = 1;
+/**
+ * Initialize i18next for localization
+ *
+ */
+i18next.init({
+	lng: "en",
+	resources: translations,
+	returnObjects: true,
+}, (err, t) => {
+  if (err) return console.log("something went wrong loading i18next", err)
+  return t("key") // -> same as i18next.t
 
-// Define an alexa-app
-var app = new alexa.app('mathfacts');
-var askNewQuestion = require("./Question");
-var answer = require("./Answer");
-
-app.launch(function(request, response) {
-  response.clearSession();
-  var reprompt = ("You can ask for addition, subtraction, multiplication, or division. Which operation would you like to practice?")
-  response.say("Yo yo yo, What kind of operation would you like to practice?").reprompt(reprompt).shouldEndSession(false);
-});
-
-app.intent('requestPractice', {
-    "slots": {
-      "Operation": "MathType"
-    },
-    "utterances": ["{-|Operation}", "for {some|} {-|Operation} {problems|practice|facts|}", "give {me|us} some practice {-|Operation} {problems|facts}", "start {-|Operation}" , "start {-|Operation} {problems|practice|facts}", "practice {-|Operation}", "Give me some {-|Operation} facts", "for {-|Operation} {problems|practice|facts}", "for some {-|Operation}", "for {-|Operation} {problems|practice|facts}", "to practice some {-|Operation}"]
-  },
-  function(request, response) {
-  	 var operation = request.slot('Operation');
-  	 var type = request.session('type');
-  	 var question = request.session("question");
-  	 var operations = ["addition", "subtraction", "multiplication", "division"];
-
-   	 	if (question) {
-   	 		if (question.promptText) { // There is already a question being asked
-			 		var prompt = ("I'm sorry, I didn't hear a number. Try repeating the whole fact. ") + question.promptText;	
-			 		var reprompt = ("If you want to stop, just say, 'stop.' " + question.promptText);
-	  	 		response.say(prompt).reprompt(reprompt).shouldEndSession(false);
-	  	 		return true;
-  	 		}
-  	 	} 
-  	 	if (operations.indexOf(operation) == -1) { // The operation is not recognized
-  	 		var reprompt = ("You can practice addition, subtraction, multiplication, or division. Which operation would you like to try?")
-  	 		response.say("Can you repeat that? Would you like to practice addition, subtraction, multiplication, or division?").reprompt(reprompt).shouldEndSession(false);
-  	 		return true;
-			}
-
-	 	// Otherwise , set the type and ask the question
-	 	response.session('type', operation);
-	 	var question = askNewQuestion(operation);
- 		    // Save the question
-		response.session("question", question);
-		response.say("Okay, " + operation + ", let's get started.");
-		var reprompt = ("Let me give you a chance to think. <break time='5s'/>" + question.promptText);
-		response.say(question.promptText).reprompt(reprompt).shouldEndSession(false);	 			
-  });
+})
 
 
-app.intent('answer', {
-  "slots": {
-    "Attempt": "AMAZON.NUMBER"
-  },
-  "utterances": ["{-|Attempt}", "{it's|is|that's|the answer is|the sum is|the product is|the result is} {-|Attempt}", "{1-19|20-144 by 12} {plus|take away|minus|times|multiplied by|divided by} {1-12} {is|equals|makes} {-|Attempt}"]
-}, function(request, response) {
-	var attempt = Number(request.slot("Attempt"));
-	// console.log("Attempt: " + attempt);
-	var question = response.session("question");
-	var isAValidNumber = (attempt >= 0)
-	if (!isAValidNumber) { // It's not a valid number
-		var prompt = ("Sorry, I didn't hear a number. Try repeating the whole fact. " + question.promptText);
-		var reprompt = ("If you're all done, you can say stop. " + question.promptText);
-		response.say(prompt).reprompt(reprompt).shouldEndSession(false);
-		return true;
+// Intents
+// Launch
+// Set Grade Level
+// Request practice
+// Answer
+// Pause
+// Stop/Cancel
+// Summarize session
+// Reminder
+
+// Prompt
+// Welcome to Math Facts. I can help you practice the the right operations for your grade level. What is your grade?
+// GRADE_LEVEL
+const LaunchRequestHandler = {
+	canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === "LaunchRequest"
+	},
+	handle(handlerInput) {
+		const welcome = i18next.t("WELCOME")
+		const prompt = i18next.t("WELCOME_PROMPT")
+		const speech = `${welcome} ${prompt}`
+		const reprompt = i18next.t("WELCOME_REPROMPT")
+
+		return handlerInput.responseBuilder
+			.speak(speech)
+			.reprompt(reprompt)
+			.getResponse()
 	}
+}
 
-	if (question) {
-		if (question.promptText) {
-				answer(request, response);
-		}
-	} else if (request.session('type')) {
-		console.log("No question, but has a type.")
-		response.say("Oops, you said a number, but I don't remember the question. Silly me! Let's try again.");
-		var question = askNewQuestion(type);
-		// ask the new question 
-		response.say(question.promptText).reprompt(question.promptText).shouldEndSession(false);
-		// save the new question
-	  response.session("question", question);
-		} else {
-			var reprompt = ("You can practice addition, subtraction, multiplication, or division. Which operation would you like to try?")
-			response.say("huh. What kind of operation would you like to practice?").reprompt(reprompt).shouldEndSession(false);
-		}
-	});
+const RequestPracticeHandler = {
+	canHandle(handlerInput) {
+		return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+		handlerInput.requestEnvelope.request.intent.name === "RequestPracticeIntent"
+	},
+	handle(handlerInput) {
+		// Check for operation type
+		// If no operation type ask for it
 
-function exitFunction(request, response) {
-  response.clearSession();
-};
+		// Otherwise, Okay, {operation}. Let's get started.
+		return handlerInput.responseBuilder
+		.speak("okay, practice!")
+		.getResponse()
+	}
+}
 
-app.sessionEnded(function(request, response) {
-  exitFunction(request, response);
-});
+exports.handler = Alexa.SkillBuilders.custom()
+  .addRequestHandlers(
+		LaunchRequestHandler,
+		RequestPracticeHandler
+	)
+  .lambda()
 
-app.intent('AMAZON.StopIntent', function(request, response) {
-  response.say("Okay, let's stop.");
-  exitFunction(request, response);
-});
 
-app.intent('AMAZON.CancelIntent', function(request, response) {
-  response.say("Okay, canceling.")
-  exitFunction(request, response);
-});
+// Your key operations in Grade 2 are addition and subtraction. Which would you like to practice?
+// OPERATION
 
-app.intent('AMAZON.HelpIntent', function(request, response) {
+// Okay, addition. Let's go! What's 2 + 3?
+// TERM_A, TERM_B
 
-  var speechOutput = "Each time you open Math Facts, I'll ask you a few problems. Try asking for some addition problems.";
-  var reprompt = "If you want to stop, you can say, 'stop.'"
-  response.say(speechOutput).reprompt(reprompt).shouldEndSession(false);
+// if (TERM_A & TERM_B) && slot is a number (check to see if it's right), otherwise (I'm sorry, I didn't hear a number. Try saying the whole equation.)
 
-});
-
-// module.exports = answerIntentHandler;
-module.exports = app;
+// Reprompt
+// You can say addition, subtraction, multiplication, or division.

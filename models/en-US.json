@@ -4,7 +4,7 @@
       "invocationName": "math facts",
       "intents": [
         {
-          "name": "requestPractice",
+          "name": "RequestPracticeIntent",
           "slots": [
             {
               "name": "Operation",
