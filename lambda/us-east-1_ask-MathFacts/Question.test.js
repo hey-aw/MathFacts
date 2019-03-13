@@ -13,7 +13,7 @@
   var Alexa = require('alexa-app');
   chai.config.includeStack = true;
 
-  var askNewQuestion = require("../question");
+  var askNewQuestion = require("./Question");
 
   describe('askNewQuestion', function() {
     context("when requesting an addition problem", function() {

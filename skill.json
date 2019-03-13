@@ -1,0 +1,95 @@
+{
+  "manifest": {
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sourceDir": "./lambda/us-east-1_ask-MathFacts"
+        }
+      }
+    },
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": true,
+      "isExportCompliant": true,
+      "containsAds": false
+    },
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Math Facts - Math Practice for Kids",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/5df1e970d926426d99d15eb212207a1c/APP_ICON?versionId=iAr_Eo8sQoIbYZ64rddShygupwbd1uqI&AWSAccessKeyId=AKIAJFEYRBGIHK2BBYKA&Expires=1552341500&Signature=aQDG9uc0ol0iEvALBXoWIeVlBjA%3D",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/f42300aab70d41c7b1e9deb6a974d4c4/APP_ICON_LARGE?versionId=fIKwoWRtYKeuywVs9bs3OdpvVcvDfyDx&AWSAccessKeyId=AKIAJFEYRBGIHK2BBYKA&Expires=1552341500&Signature=NvaKtdkuLx%2FJ7UX037tbCJvb6sQ%3D",
+          "summary": "Math Facts provides math practice your whole family can enjoy together.",
+          "description": "Math Facts gives you practice for addition, subtraction, multiplication and division. Problems come in sets of five. If you get enough of them right, Alexa will give you a silly message of congratulations. This skill makes math practice fun for the whole family!\n\nThe skill has been refined through extensive kid testing for accuracy and precision in listening to responses. Try it out and see the results!",
+          "examplePhrases": [
+            "Alexa, open Math Facts.",
+            "Alexa, ask Math Facts for some addition problems.",
+            "Alexa, tell Math Facts to start multiplication practice."
+          ],
+          "keywords": [
+            "math",
+            "facts",
+            "arithmetic",
+            "times",
+            "tables",
+            "addition",
+            "subtraction",
+            "multiplication",
+            "division"
+          ]
+        },
+        "en-IN": {
+          "name": "Math Facts - Math Practice for Kids",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/5df1e970d926426d99d15eb212207a1c/APP_ICON?versionId=iAr_Eo8sQoIbYZ64rddShygupwbd1uqI&AWSAccessKeyId=AKIAJFEYRBGIHK2BBYKA&Expires=1552341500&Signature=aQDG9uc0ol0iEvALBXoWIeVlBjA%3D",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/f42300aab70d41c7b1e9deb6a974d4c4/APP_ICON_LARGE?versionId=fIKwoWRtYKeuywVs9bs3OdpvVcvDfyDx&AWSAccessKeyId=AKIAJFEYRBGIHK2BBYKA&Expires=1552341500&Signature=NvaKtdkuLx%2FJ7UX037tbCJvb6sQ%3D",
+          "summary": "Math Facts provides math practice your whole family can enjoy together.",
+          "description": "Math Facts gives you practice for addition, subtraction, multiplication and division. Problems come in sets of five. If you get enough of them right, Alexa will give you a silly message of congratulations. This skill makes math practice fun for the whole family!\n\nThe skill has been refined through extensive kid testing for accuracy and precision in listening to responses. Try it out and see the results!",
+          "examplePhrases": [
+            "Alexa, open Math Facts.",
+            "Alexa, ask Math Facts for some addition problems.",
+            "Alexa, tell Math Facts to start multiplication practice."
+          ],
+          "keywords": [
+            "math",
+            "facts",
+            "arithmetic",
+            "times",
+            "tables",
+            "addition",
+            "subtraction",
+            "multiplication",
+            "division"
+          ]
+        },
+        "en-AU": {
+          "name": "Math Facts - Math Practice for Kids",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/5df1e970d926426d99d15eb212207a1c/APP_ICON?versionId=iAr_Eo8sQoIbYZ64rddShygupwbd1uqI&AWSAccessKeyId=AKIAJFEYRBGIHK2BBYKA&Expires=1552341500&Signature=aQDG9uc0ol0iEvALBXoWIeVlBjA%3D",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/f42300aab70d41c7b1e9deb6a974d4c4/APP_ICON_LARGE?versionId=fIKwoWRtYKeuywVs9bs3OdpvVcvDfyDx&AWSAccessKeyId=AKIAJFEYRBGIHK2BBYKA&Expires=1552341500&Signature=NvaKtdkuLx%2FJ7UX037tbCJvb6sQ%3D",
+          "summary": "Math Facts provides math practice your whole family can enjoy together.",
+          "description": "Math Facts gives you practice for addition, subtraction, multiplication and division. Problems come in sets of five. If you get enough of them right, Alexa will give you a silly message of congratulations. This skill makes math practice fun for the whole family!\n\nThe skill has been refined through extensive kid testing for accuracy and precision in listening to responses. Try it out and see the results!",
+          "examplePhrases": [
+            "Alexa, open Math Facts.",
+            "Alexa, ask Math Facts for some addition problems.",
+            "Alexa, tell Math Facts to start multiplication practice."
+          ],
+          "keywords": [
+            "math",
+            "facts",
+            "arithmetic",
+            "times",
+            "tables",
+            "addition",
+            "subtraction",
+            "multiplication",
+            "division"
+          ]
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "The skill goes through a set of five questions and finishes with a summary.\n\n7/25/16 Change to interaction model to allow for the {Answer} to be spoken by itself.",
+      "category": "EDUCATION_AND_REFERENCE"
+    }
+  }
+}

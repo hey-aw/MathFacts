@@ -14,7 +14,7 @@ var answer = require("./Answer");
 app.launch(function(request, response) {
   response.clearSession();
   var reprompt = ("You can ask for addition, subtraction, multiplication, or division. Which operation would you like to practice?")
-  response.say("What kind of operation would you like to practice?").reprompt(reprompt).shouldEndSession(false);
+  response.say("Yo yo yo, What kind of operation would you like to practice?").reprompt(reprompt).shouldEndSession(false);
 });
 
 app.intent('requestPractice', {
@@ -85,7 +85,7 @@ app.intent('answer', {
 	  response.session("question", question);
 		} else {
 			var reprompt = ("You can practice addition, subtraction, multiplication, or division. Which operation would you like to try?")
-			response.say("What kind of operation would you like to practice?").reprompt(reprompt).shouldEndSession(false);
+			response.say("huh. What kind of operation would you like to practice?").reprompt(reprompt).shouldEndSession(false);
 		}
 	});
 
