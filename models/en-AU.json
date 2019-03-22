@@ -4,22 +4,47 @@
       "invocationName": "math facts",
       "intents": [
         {
-          "name": "requestPractice",
+          "name": "RequestPracticeIntent",
           "slots": [
             {
               "name": "Operation",
-              "type": "MathType"
+              "type": "Custom_Operation",
+              "samples": [
+                "to practice some {Operation}",
+                "for {Operation} practice",
+                "for some {Operation}",
+                "{Operation} practice",
+                "{Operation} facts",
+                "{Operation} problems",
+                "for {Operation} problems",
+                "give me some {Operation} facts",
+                "practice {Operation}",
+                "Start {Operation} problems",
+                "start {Operation}",
+                "for {Operation} facts",
+                "give me some {Operation} problems",
+                "give me some practice {Operation} problems",
+                "for some {Operation} facts",
+                "for some {Operation} practice",
+                "for some {Operation} problems",
+                "Practice some {Operation}",
+                "Practice {Operation} problems",
+                "{Operation}"
+              ]
             }
           ],
           "samples": [
+            "practice problems",
+            "maths problems",
+            "for maths practice",
+            "to start",
+            "start",
+            "for practice",
+            "to practice",
             "{Operation}",
             "for some {Operation} problems",
-            "for {Operation} problems",
             "for some {Operation} practice",
-            "for {Operation} practice",
             "for some {Operation} facts",
-            "for {Operation} facts",
-            "for some {Operation}",
             "for {Operation}",
             "give me some practice {Operation} problems",
             "give us some practice {Operation} problems",
@@ -31,9 +56,6 @@
             "start {Operation} facts",
             "practice {Operation}",
             "Give me some {Operation} facts",
-            "for {Operation} problems",
-            "for {Operation} practice",
-            "for {Operation} facts",
             "for some {Operation}",
             "for {Operation} problems",
             "for {Operation} practice",
@@ -42,15 +64,18 @@
           ]
         },
         {
-          "name": "answer",
+          "name": "AttemptAnswerIntent",
           "slots": [
             {
               "name": "Attempt",
-              "type": "AMAZON.NUMBER"
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{Attempt}"
+              ]
             }
           ],
           "samples": [
-            " {Attempt}",
+            "{Attempt}",
             "it's {Attempt}",
             "is {Attempt}",
             "that's {Attempt}",
@@ -4422,13 +4447,20 @@
           ]
         },
         {
-          "name": "AMAZON.StopIntent"
+          "name": "AMAZON.StopIntent",
+          "samples": []
         },
         {
-          "name": "AMAZON.CancelIntent"
+          "name": "AMAZON.CancelIntent",
+          "samples": []
         },
         {
-          "name": "AMAZON.HelpIntent"
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
         }
       ],
       "types": [
@@ -4455,9 +4487,75 @@
               }
             }
           ],
-          "name": "MathType"
+          "name": "Custom_Operation"
         }
       ]
-    }
-  }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "RequestPracticeIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "Operation",
+              "type": "Custom_Operation",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.595386504545.791875951270"
+              }
+            }
+          ]
+        },
+        {
+          "name": "AttemptAnswerIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "Attempt",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1422745372376.51991895830"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.595386504545.791875951270",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What operation would you like to practice?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Would you like to practice addition, subtraction, multiplication, or division?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1422745372376.51991895830",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "I didn't hear a number. Can you repeat that?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I'm sorry, what was your answer?"
+          }
+        ]
+      }
+    ]
+  },
+  "version": "1"
 }

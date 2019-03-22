@@ -28,6 +28,6 @@ module.exports = {
     }, {
       "enforceForRenamedProperties": false
 		}],
-		camelcase: "off"
+		camelcase: "error"
   }
 }

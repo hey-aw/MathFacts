@@ -1,4 +1,3 @@
 {
-	"ask.profile": "ask-cli-awzone",
-	"jest.rootPath": "/lambda/us-east-1_ask-MathFacts/test"
+	"ask.profile": "ask-cli-awzone"
 }
