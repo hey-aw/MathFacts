@@ -1,10 +1,12 @@
 {
   "name": "math_facts",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Math Facts Alexa Skill",
   "main": "index.js",
   "dependencies": {
     "ask-sdk": "^2.5.1",
+    "ask-sdk-dynamodb-persistence-adapter": "^2.5.1",
+    "ask-sdk-s3-persistence-adapter": "^2.5.1",
     "i18next": "^15.0.6"
   },
   "devDependencies": {
@@ -21,5 +23,9 @@
     "test": "jest"
   },
   "author": "Awesomely Done, LLC",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AWzone/MathFacts.git"
+  }
 }

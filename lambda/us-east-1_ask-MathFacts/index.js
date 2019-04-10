@@ -22,7 +22,7 @@ i18next.init({
 	return t("key") // -> same as i18next.t
 })
 
-exports.handler = Alexa.SkillBuilders.custom()
+exports.handler = Alexa.SkillBuilders.standard()
 	.addRequestHandlers(
 		handlers.LaunchRequestHandler,
 		handlers.RequestPracticeHandler,

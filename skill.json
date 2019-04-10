@@ -3,7 +3,8 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "sourceDir": "./lambda/us-east-1_ask-MathFacts"
+          "sourceDir": "./lambda/us-east-1_ask-MathFacts",
+          "uri": "MathFactsASK"
         }
       }
     },

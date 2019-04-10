@@ -19,8 +19,34 @@ function Event() {
 				permissions: {}
 			}
 		},
-		context: {},
-		request: {}
+		context: {
+			System: {
+				device: {
+					deviceId: "string",
+					supportedInterfaces: {
+						AudioPlayer: {}
+					}
+				},
+				application: {
+					applicationId: "amzn1.ask.skill.[unique-value-here]"
+				},
+				user: {
+					userId: "amzn1.ask.account.[unique-value-here]",
+					accessToken: "Atza|AAAAAAAA...",
+					permissions: {
+						consentToken: "ZZZZZZZ..."
+					}
+				},
+				apiEndpoint: "https://api.amazonalexa.com",
+				apiAccessToken: "AxThk..."
+			},
+			AudioPlayer: {
+				playerActivity: "PLAYING",
+				token: "audioplayer-token",
+				offsetInMilliseconds: 0
+			}
+		},
+		request: {},
 	})
 }
 

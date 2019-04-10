@@ -57,17 +57,17 @@ exports.RequestPracticeHandler = {
 		// Find out the operation requested
 		const { slots } = handlerInput.requestEnvelope.request.intent // Safe because canHandle checked that it's an intent request
 
-		
+
 
 		// Set the operation
 		if (slots.OPERATION && allowedOperations.includes(slots.OPERATION.value)) {
 			operation = slots.OPERATION.value
 		} else {
 			return handlerInput.responseBuilder
-			.speak(`${i18next.t("FALLBACK_INTENT")} ${i18next.t("HELP_PROMPT")}`)
-			.reprompt(i18next.t("HELP_PROMPT"))
-			.withShouldEndSession(false)
-			.getResponse()
+				.speak(`${i18next.t("FALLBACK_INTENT")} ${i18next.t("HELP_PROMPT")}`)
+				.reprompt(i18next.t("HELP_PROMPT"))
+				.withShouldEndSession(false)
+				.getResponse()
 		}
 
 		// Get the first problem
@@ -200,13 +200,13 @@ exports.HelpIntentHandler = {
 	handle(handlerInput) {
 
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const {question} = sessionAttributes
+		const { question } = sessionAttributes
 		if (question) {
 			handlerInput.responseBuilder
-			.speak(`${i18next.t("REPEAT")} ${question.promptText}`)
+				.speak(`${i18next.t("REPEAT")} ${question.promptText}`)
 		} else {
 			handlerInput.responseBuilder
-			.speak(i18next.t("HELP_PROMPT"))
+				.speak(i18next.t("HELP_PROMPT"))
 		}
 		return handlerInput.responseBuilder
 			.getResponse()
@@ -245,15 +245,15 @@ exports.FallBackHandler = {
 	},
 	handle(handlerInput) {
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const {question} = sessionAttributes
+		const { question } = sessionAttributes
 		if (question) {
 			handlerInput.responseBuilder
-			.speak(`${i18next.t("FALLBACK_INTENT")} ${question.promptText}`)
-			.reprompt(question.promptText)
+				.speak(`${i18next.t("FALLBACK_INTENT")} ${question.promptText}`)
+				.reprompt(question.promptText)
 		} else {
 			handlerInput.responseBuilder
-			.speak(`${i18next.t("FALLBACK_INTENT")} ${i18next.t("HELP_PROMPT")}`)
-			.reprompt(i18next.t("HELP_PROMPT"))
+				.speak(`${i18next.t("FALLBACK_INTENT")} ${i18next.t("HELP_PROMPT")}`)
+				.reprompt(i18next.t("HELP_PROMPT"))
 		}
 
 		return handlerInput.responseBuilder
