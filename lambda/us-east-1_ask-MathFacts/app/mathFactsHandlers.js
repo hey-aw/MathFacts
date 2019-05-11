@@ -14,7 +14,9 @@ const LARGE_IMAGE_URL = "https://s3.amazonaws.com/awzone/Math-Facts-Icons/ASK+St
 exports.LocaleInterceptor = {
 	async process(handlerInput) {
 		// Set the language to the request locale
-		const { locale } = handlerInput.requestEnvelope.request
+		const {
+			locale
+		} = handlerInput.requestEnvelope.request
 		i18next.changeLanguage(locale)
 	}
 }
@@ -27,16 +29,48 @@ exports.LaunchRequestHandler = {
 		return handlerInput.requestEnvelope.request.type === "LaunchRequest"
 	},
 	handle(handlerInput) {
-		const welcome = i18next.t("WELCOME")
-		const prompt = i18next.t("WELCOME_PROMPT")
-		const speech = `${welcome} ${prompt}`
-		const reprompt = i18next.t("WELCOME_REPROMPT")
+		return new Promise((resolve) => {
+			const welcome = i18next.t("WELCOME")
+			const prompt = i18next.t("WELCOME_PROMPT")
+			const speech = `${welcome} ${prompt}`
+			const reprompt = i18next.t("WELCOME_REPROMPT")
 
-		// Welcome and ask for the operation
-		return handlerInput.responseBuilder
-			.speak(speech)
-			.reprompt(reprompt)
-			.getResponse()
+			// Set up persistent attributes
+			// handlerInput.attributesManager.getPersistentAttributes()
+			// 	.then((attributes) => {
+			// 		const persistentAttributes = attributes || {}
+			// 		console.log(`persistent attributes: ${JSON.stringify(persistentAttributes)}`)
+			// 		// Increment session count
+			// 		let { sessionCount } = persistentAttributes
+			// 		console.log(`persisted session count: ${sessionCount}`)
+			// 		if (sessionCount) {
+			// 			welcome = i18next.t("WELCOME_BACK")
+			// 			sessionCount += 1
+			// 		} else {
+			// 			sessionCount = 1
+			// 		}
+			// 		console.log(`new session count: ${sessionCount}`)
+			// 		persistentAttributes.sessionCount = sessionCount
+			// 		handlerInput.attributesManager.setPersistentAttributes(persistentAttributes)
+			// 		console.log(`new session attributes: ${JSON.stringify(persistentAttributes)}`)
+			// 	})
+			// 	.then(() => {
+			// 		// Welcome and ask for the operation
+			// 		resolve(handlerInput.responseBuilder
+			// 			.speak(speech)
+			// 			.reprompt(reprompt)
+			// 			.getResponse()
+			// 		)
+			// 	})
+			// 	.catch((error) => {
+			// 		reject(error)
+			// 	})
+			resolve(handlerInput.responseBuilder
+				.speak(speech)
+				.reprompt(reprompt)
+				.getResponse()
+			)
+		})
 	}
 }
 
@@ -55,7 +89,9 @@ exports.RequestPracticeHandler = {
 		// Automatic dialog delegation is enabled
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
 		// Find out the operation requested
-		const { slots } = handlerInput.requestEnvelope.request.intent // Safe because canHandle checked that it's an intent request
+		const {
+			slots
+		} = handlerInput.requestEnvelope.request.intent // Safe because canHandle checked that it's an intent request
 
 
 
@@ -72,6 +108,13 @@ exports.RequestPracticeHandler = {
 
 		// Get the first problem
 		const question = new Question(operation)
+		question.turn = 0
+
+		// Set up players
+		question.playerCurrent = 0 // TODO: support multiplayer
+		question.players = {
+			operation
+		}
 
 		// Store the problem in the session
 		sessionAttributes.question = question
@@ -81,7 +124,9 @@ exports.RequestPracticeHandler = {
 		handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
 
 		// Prompt the question
-		const prompt = i18next.t("PRACTICE_PROMPT", { operation })
+		const prompt = i18next.t("PRACTICE_PROMPT", {
+			operation
+		})
 		const speech = `${prompt} ${question.promptText}`
 		const reprompt = `${i18next.t("PRACTICE_REPROMPT")} ${question.promptText}`
 
@@ -98,23 +143,43 @@ exports.RequestPracticeHandler = {
  */
 exports.AttemptAnswerHandler = {
 	canHandle(handlerInput) {
-		if (handlerInput.requestEnvelope.request.type === "IntentRequest"
-			&& handlerInput.requestEnvelope.request.intent.name === "AttemptIntent") {
+		if (handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+			handlerInput.requestEnvelope.request.intent.name === "AttemptIntent") {
 			const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
 			return sessionAttributes.question
 		}
 		return false
 	},
 	handle(handlerInput) {
-		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const { question, question: { operation } } = sessionAttributes
-		const { slots } = handlerInput.requestEnvelope.request.intent
-
+		let playerCurrent
 		let speech
 		let reprompt
 		let attemptValue
-		let questionsAttempted
-		let questionsCorrect
+
+		const {
+			slots
+		} = handlerInput.requestEnvelope.request.intent
+		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
+		const {
+			question,
+			players,
+			playerIndex
+		} = sessionAttributes
+
+		// Set up current player
+		if (players && players[playerIndex]) {
+			playerCurrent = players[playerIndex]
+		}
+
+		if (!playerCurrent) {
+			playerCurrent = {
+				operation: question.operation,
+				score: 0,
+				turnCount: 0
+			}
+		}
+
+		// Is it correct?
 
 		// Get the vale of the spoken attempt
 		if (slots && slots.ATTEMPT && slots.ATTEMPT.resolutions && slots.ATTEMPT.resolutionsPerAuthority) {
@@ -123,30 +188,61 @@ exports.AttemptAnswerHandler = {
 			attemptValue = parseInt(slots.ATTEMPT.value, 10)
 		}
 
-		questionsCorrect = sessionAttributes.questionsCorrect || 0
 
 		// If the attempt is correct
 		if (attemptValue === question.solution) {
 			speech = `${i18next.t("ATTEMPT_CORRECT")} ${question.solutionText}`
 
-			// Increment questions correct
-			questionsCorrect += 1
-			sessionAttributes.questionsCorrect = questionsCorrect
+			playerCurrent.score += 1
+
+
+
 		} else { // attempt is incorrect
 			// Prompt with repetition
-			speech = `${i18next.t("ATTEMPT_INCORRECT")} ${question.solutionText} ${i18next.t("ATTEMPT_INCORRECT_PROMPT")} ${question.solutionText} ${question.solutionText} ${question.solutionText}`
+			speech = `${i18next.t("ATTEMPT_INCORRECT")} ${question.solutionText}`
+
+
+
+			// Add try again only if single player
+			const tryAgainString = `${i18next.t("ATTEMPT_INCORRECT_PROMPT")} ${question.solutionText} ${question.solutionText} ${question.solutionText}`
+
+
+			if (players && players.length < 2) {
+				speech = `${speech} ${tryAgainString}`
+			}
 		}
 
-		// Increment questionsAttempted
-		questionsAttempted = sessionAttributes.questionsAttempted || 0
-		questionsAttempted += 1
-		sessionAttributes.questionsAttempted = questionsAttempted
+
+		// Check to see if this player gets another question
+
+		// If turn count is not at turn limit
+
+		// Ask another question
+
+		// Contingue (turn count is at turn limit)
+
+		// Check to see who should get the next question
+
+		// If currently player 1 and there are two players, give to player 2
+
+		// If currently player 2, check the score
+
+		// If there is a winner, call it
+
+		// If there is a tie, set lightning mode and go back to player 1
+
+
+
 
 		// If questions attempted is still below the limit
-		if (questionsAttempted < QUESTION_LIMIT) {
+		if (playerCurrent.turnCount < QUESTION_LIMIT) {
+
 			// Ask new question
-			const newQuestion = new Question(operation)
+			const newQuestion = new Question(question.operation)
+			playerCurrent.turnCount += 1
 			sessionAttributes.question = newQuestion
+			sessionAttributes.players[playerIndex] = playerCurrent
+
 			speech = `${speech} ${newQuestion.promptText}`
 			reprompt = `${i18next.t("PRACTICE_REPROMPT")} ${sessionAttributes.question.promptText}`
 			handlerInput.responseBuilder
@@ -154,20 +250,23 @@ exports.AttemptAnswerHandler = {
 
 		} else {
 			// Summarize session and prompt for more practice or goodbye
-			const summary = i18next.t("SUMMARY", { questionsCorrect, questionsAttempted })
-			const ratio = questionsCorrect / questionsAttempted
+			const summary = i18next.t("SUMMARY", {
+				questionsCorrect: playerCurrent.score,
+				questionsAttempted: playerCurrent.turnCount
+			})
+			const ratio = playerCurrent.score / playerCurrent.turnCount
 			if (ratio > 0.8) {
 				const congratsArray = i18next.t("CONGRATULATIONS")
 				const congrats = congratsArray[Math.floor(Math.random() * congratsArray.length)]
-				speech = `${summary} ${congrats} ${i18next.t("RETRY_PROMPT", { operation })}`
+				speech = `${summary} ${congrats} ${i18next.t("RETRY_PROMPT", question.operation)}`
 			} else {
 				const congrats = i18next.t("CONGRATULATIONS_MEH")
-				speech = `${summary} ${congrats} ${i18next.t("RETRY_PROMPT", { operation })}`
+				speech = `${summary} ${congrats} ${i18next.t("RETRY_PROMPT", question.operation)}`
 			}
 			reprompt = i18next.t("RETRY_REPROMPT")
 
 			// Present card
-			const cardTitle = i18next.t("CARDTITLES")[operation]
+			const cardTitle = i18next.t("CARDTITLES")[question.operation]
 			handlerInput.responseBuilder
 				.withStandardCard(cardTitle, summary, SMALL_IMAGE_URL, LARGE_IMAGE_URL)
 				.withShouldEndSession(true)
@@ -194,13 +293,15 @@ exports.AttemptAnswerHandler = {
  */
 exports.HelpIntentHandler = {
 	canHandle(handlerInput) {
-		return handlerInput.requestEnvelope.request.type === "IntentRequest"
-			&& handlerInput.requestEnvelope.request.intent.name === "AMAZON.HelpIntent"
+		return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+			handlerInput.requestEnvelope.request.intent.name === "AMAZON.HelpIntent"
 	},
 	handle(handlerInput) {
 
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const { question } = sessionAttributes
+		const {
+			question
+		} = sessionAttributes
 		if (question) {
 			handlerInput.responseBuilder
 				.speak(`${i18next.t("REPEAT")} ${question.promptText}`)
@@ -224,17 +325,40 @@ exports.StopIntentHandler = {
 			"AMAZON.CancelIntent",
 			"AMAZON.NavigateHomeIntent"
 		]
-		return handlerInput.requestEnvelope.request.type === "IntentRequest"
-		&& intentNames.includes(handlerInput.requestEnvelope.request.intent.name)
-
+		return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+			intentNames.includes(handlerInput.requestEnvelope.request.intent.name)
 	},
 	handle(handlerInput) {
+
+		// Save persisistent attributes
+		// handlerInput.attributesManager.getPersistentAttributes()
+		// 	.then((attributes) => {
+		// 		console.log(`attributes I'm going to save ${JSON.stringify(attributes)}`)
+		// 		handlerInput.attributesManager.savePersistentAttributes(attributes)
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error(error)
+		// 	})
+
 		return handlerInput.responseBuilder
 			.speak(i18next.t("GOODBYE"))
 			.withShouldEndSession(true)
 			.getResponse()
 	}
 }
+
+/**
+ * Session ended request
+ */
+// exports.SessionEndedHandler = {
+// 	canHandle(handlerInput) {
+// 		return handlerInput.requestEnvelope.request.type === "SessionEndedRequest"
+// 	},
+// 	handle(handlerInput) {
+// 		return handlerInput.attributesManager.savePersistentAttributes()
+// 	}
+// }
+
 
 /**
  * Fallback Intent
@@ -245,7 +369,9 @@ exports.FallBackHandler = {
 	},
 	handle(handlerInput) {
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const { question } = sessionAttributes
+		const {
+			question
+		} = sessionAttributes
 		if (question) {
 			handlerInput.responseBuilder
 				.speak(`${i18next.t("FALLBACK_INTENT")} ${question.promptText}`)
@@ -260,5 +386,3 @@ exports.FallBackHandler = {
 			.getResponse()
 	}
 }
-
-

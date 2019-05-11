@@ -5,8 +5,6 @@
   "main": "index.js",
   "dependencies": {
     "ask-sdk": "^2.5.1",
-    "ask-sdk-dynamodb-persistence-adapter": "^2.5.1",
-    "ask-sdk-s3-persistence-adapter": "^2.5.1",
     "i18next": "^15.0.6"
   },
   "devDependencies": {

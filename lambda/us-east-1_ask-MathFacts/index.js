@@ -7,6 +7,8 @@ const i18next = require("i18next")
 const translations = require("./config/translations.js")
 const handlers = require("./app/mathFactsHandlers")
 
+// const ENV_NAME = process.env.ENV_NAME || "TEST"
+// const TABLE_NAME = `MathFactsUserTable${ENV_NAME}`
 
 /**
  * Initialize i18next for localization
@@ -29,9 +31,12 @@ exports.handler = Alexa.SkillBuilders.standard()
 		handlers.AttemptAnswerHandler,
 		handlers.HelpIntentHandler,
 		handlers.StopIntentHandler,
+		// handlers.SessionEndedHandler,
 		handlers.FallBackHandler
 	)
 	.addRequestInterceptors(
 		handlers.LocaleInterceptor
 	)
+	// .withTableName(TABLE_NAME)
+	// .withAutoCreateTable(true)
 	.lambda()

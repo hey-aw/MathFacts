@@ -1,3 +1,6 @@
 {
-	"ask.profile": "ask-cli-awzone"
+	"ask.profile": "ask-cli-awzone",
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "HookyQR.beautify"
 }
