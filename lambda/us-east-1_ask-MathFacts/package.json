@@ -4,8 +4,9 @@
   "description": "Math Facts Alexa Skill",
   "main": "index.js",
   "dependencies": {
-    "ask-sdk": "^2.5.1",
-    "ask-sdk-dynamodb-persistence-adapter": "^2.5.1",
+    "ask-sdk-core": "^2.5.2",
+    "ask-sdk-dynamodb-persistence-adapter": "^2.5.2",
+    "ask-sdk-model": "^1.15.1",
     "ask-sdk-s3-persistence-adapter": "^2.5.1",
     "i18next": "^15.0.6"
   },

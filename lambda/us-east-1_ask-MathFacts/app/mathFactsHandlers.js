@@ -14,10 +14,13 @@ const LARGE_IMAGE_URL = "https://s3.amazonaws.com/awzone/Math-Facts-Icons/ASK+St
 exports.LocaleInterceptor = {
 	async process(handlerInput) {
 		// Set the language to the request locale
-		const { locale } = handlerInput.requestEnvelope.request
+		const {
+			locale
+		} = handlerInput.requestEnvelope.request
 		i18next.changeLanguage(locale)
 	}
 }
+
 
 /**
  * Launch Request
@@ -41,7 +44,45 @@ exports.LaunchRequestHandler = {
 }
 
 /**
- * Practice Operations Request
+ * Set Grade Level Intent
+ */
+
+exports.SetGradeLevelHandler = {
+	canHandle(handlerInput) {
+		return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+			handlerInput.requestEnvelope.request.intent.name === "SetGradeLevelIntent"
+	},
+	handle(handlerInput) {
+		return new Promise((resolve, reject) => {
+			const {
+				slots
+			} = handlerInput.requestEnvelope.request.intent // Safe because canHandle checked that it's an intent request
+			handlerInput.attributesManager.getPersistentAttributes()
+				.then((attributes) => {
+					const newAttributes = attributes
+					if (slots && slots.GRADELEVEL && slots.GRADELEVEL.value) {
+						newAttributes.gradeLevel = slots.GRADELEVEL.value
+					}
+					handlerInput.attributesManager.savePersistentAttributes(newAttributes)
+				})
+				.then(() => {
+					resolve(handlerInput.responseBuilder
+						.speak(`Grade Level Set to ${slots.GRADELEVEL.value}`)
+						.getResponse())
+				})
+				.catch((error) => {
+					console.log(error)
+					reject(handlerInput.responseBuilder
+						.speak("Sorry I couldn't set the grade level")
+						.getResponse()
+					)
+				})
+		})
+	}
+}
+
+/**
+ * Request Practice Intent
  */
 exports.RequestPracticeHandler = {
 	canHandle(handlerInput) {
@@ -55,9 +96,9 @@ exports.RequestPracticeHandler = {
 		// Automatic dialog delegation is enabled
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
 		// Find out the operation requested
-		const { slots } = handlerInput.requestEnvelope.request.intent // Safe because canHandle checked that it's an intent request
-
-
+		const {
+			slots
+		} = handlerInput.requestEnvelope.request.intent // Safe because canHandle checked that it's an intent request
 
 		// Set the operation
 		if (slots.OPERATION && allowedOperations.includes(slots.OPERATION.value)) {
@@ -81,7 +122,9 @@ exports.RequestPracticeHandler = {
 		handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
 
 		// Prompt the question
-		const prompt = i18next.t("PRACTICE_PROMPT", { operation })
+		const prompt = i18next.t("PRACTICE_PROMPT", {
+			operation
+		})
 		const speech = `${prompt} ${question.promptText}`
 		const reprompt = `${i18next.t("PRACTICE_REPROMPT")} ${question.promptText}`
 
@@ -98,8 +141,8 @@ exports.RequestPracticeHandler = {
  */
 exports.AttemptAnswerHandler = {
 	canHandle(handlerInput) {
-		if (handlerInput.requestEnvelope.request.type === "IntentRequest"
-			&& handlerInput.requestEnvelope.request.intent.name === "AttemptIntent") {
+		if (handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+			handlerInput.requestEnvelope.request.intent.name === "AttemptIntent") {
 			const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
 			return sessionAttributes.question
 		}
@@ -107,8 +150,15 @@ exports.AttemptAnswerHandler = {
 	},
 	handle(handlerInput) {
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const { question, question: { operation } } = sessionAttributes
-		const { slots } = handlerInput.requestEnvelope.request.intent
+		const {
+			question,
+			question: {
+				operation
+			}
+		} = sessionAttributes
+		const {
+			slots
+		} = handlerInput.requestEnvelope.request.intent
 
 		let speech
 		let reprompt
@@ -154,7 +204,10 @@ exports.AttemptAnswerHandler = {
 
 		} else {
 			// Summarize session and prompt for more practice or goodbye
-			const summary = i18next.t("SUMMARY", { questionsCorrect, questionsAttempted })
+			const summary = i18next.t("SUMMARY", {
+				questionsCorrect,
+				questionsAttempted
+			})
 			const ratio = questionsCorrect / questionsAttempted
 			if (ratio > 0.8) {
 				const congratsArray = i18next.t("CONGRATULATIONS")
@@ -194,13 +247,15 @@ exports.AttemptAnswerHandler = {
  */
 exports.HelpIntentHandler = {
 	canHandle(handlerInput) {
-		return handlerInput.requestEnvelope.request.type === "IntentRequest"
-			&& handlerInput.requestEnvelope.request.intent.name === "AMAZON.HelpIntent"
+		return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+			handlerInput.requestEnvelope.request.intent.name === "AMAZON.HelpIntent"
 	},
 	handle(handlerInput) {
 
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const { question } = sessionAttributes
+		const {
+			question
+		} = sessionAttributes
 		if (question) {
 			handlerInput.responseBuilder
 				.speak(`${i18next.t("REPEAT")} ${question.promptText}`)
@@ -224,8 +279,8 @@ exports.StopIntentHandler = {
 			"AMAZON.CancelIntent",
 			"AMAZON.NavigateHomeIntent"
 		]
-		return handlerInput.requestEnvelope.request.type === "IntentRequest"
-		&& intentNames.includes(handlerInput.requestEnvelope.request.intent.name)
+		return handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+			intentNames.includes(handlerInput.requestEnvelope.request.intent.name)
 
 	},
 	handle(handlerInput) {
@@ -245,7 +300,9 @@ exports.FallBackHandler = {
 	},
 	handle(handlerInput) {
 		const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-		const { question } = sessionAttributes
+		const {
+			question
+		} = sessionAttributes
 		if (question) {
 			handlerInput.responseBuilder
 				.speak(`${i18next.t("FALLBACK_INTENT")} ${question.promptText}`)
@@ -260,5 +317,3 @@ exports.FallBackHandler = {
 			.getResponse()
 	}
 }
-
-

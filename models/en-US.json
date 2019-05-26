@@ -4461,6 +4461,29 @@
         {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "SetGradeLevelIntent",
+          "slots": [
+            {
+              "name": "GradeLevel",
+              "type": "GradeLevel",
+              "samples": [
+                "I'm in {GradeLevel}",
+                "I'm in the {GradeLevel}",
+                "{GradeLevel}"
+              ]
+            }
+          ],
+          "samples": [
+            "My grade level is {GradeLevel}",
+            "Set the grade level",
+            "Set my grade level"
+          ]
         }
       ],
       "types": [
@@ -4488,6 +4511,67 @@
             }
           ],
           "name": "Custom_Operation"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "sixth grade",
+                "synonyms": [
+                  "sixth"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "fifth grade",
+                "synonyms": [
+                  "fifth"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "fourth grade",
+                "synonyms": [
+                  "fourth"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "third grade",
+                "synonyms": [
+                  "third"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "second grade",
+                "synonyms": [
+                  "second"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "first grade",
+                "synonyms": [
+                  "first"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Kindergarten",
+                "synonyms": [
+                  "kindy"
+                ]
+              }
+            }
+          ],
+          "name": "GradeLevel"
         }
       ]
     },
@@ -4524,6 +4608,22 @@
               }
             }
           ]
+        },
+        {
+          "name": "SetGradeLevelIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "GradeLevel",
+              "type": "GradeLevel",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.774425628173.1491009821597"
+              }
+            }
+          ]
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -4554,8 +4654,25 @@
             "value": "I'm sorry, what was your answer?"
           }
         ]
+      },
+      {
+        "id": "Elicit.Slot.774425628173.1491009821597",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What grade are you in?"
+          },
+          {
+            "type": "PlainText",
+            "value": "What is your grade level?"
+          },
+          {
+            "type": "PlainText",
+            "value": "What grade level would you like to practice?"
+          }
+        ]
       }
     ]
   },
-  "version": "1"
+  "version": "8"
 }
