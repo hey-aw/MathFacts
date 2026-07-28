@@ -27,5 +27,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/AWzone/MathFacts.git"
+  },
+  "overrides": {
+    "js-yaml@>=3.0.0 <3.15.0": "3.15.0",
+    "js-yaml@>=4.0.0 <4.3.0": "4.3.0"
   }
 }
